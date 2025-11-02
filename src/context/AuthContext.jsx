@@ -31,7 +31,8 @@ export const AuthProvider = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, initialState);
 
   // On mount, refresh user session
-  useEffect(() => {
+ useEffect(() => {
+  if (!state.user) {
     const token = sessionStorage.getItem("accessToken");
     if (!token) {
       dispatch({ type: "LOGOUT" });
@@ -40,29 +41,21 @@ export const AuthProvider = ({ children }) => {
     const refreshUser = async () => {
       dispatch({ type: "LOADING" });
       try {
-        // Refresh token to get new access token
         const response = await api.post("/auth/refresh-token");
         const accessToken = response.data.data.accessToken;
         sessionStorage.setItem("accessToken", accessToken);
 
-        // Fetch user profile using /auth/profile
         const profileResponse = await api.get("/auth/profile");
-        dispatch({
-          type: "LOGIN_SUCCESS",
-          payload: { user: profileResponse.data.data },
-        });
+        dispatch({ type: "LOGIN_SUCCESS", payload: { user: profileResponse.data.data } });
       } catch (error) {
         sessionStorage.removeItem("accessToken");
-        dispatch({
-          type: "AUTH_ERROR",
-          payload:
-            error.response?.data?.message || "Failed to refresh session.",
-        });
+        dispatch({ type: "AUTH_ERROR", payload: error.response?.data?.message || "Failed to refresh session." });
       }
     };
-
     refreshUser();
-  }, []);
+  }
+}, [state.user]);
+
 
   // Login function
   const login = async (email, password) => {
