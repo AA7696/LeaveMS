@@ -51,7 +51,7 @@ function DashboardNavbar({ toggleSidebar, isOpen }) {
                     {/* Logo */}
                     <div className="flex items-center">
                         <span className="bg-blue-600 p-2 rounded-lg mr-2">
-                            <svg width="24" height="24" fill="white" viewBox="0 0 24 24">
+                            {/* <svg width="24" height="24" fill="white" viewBox="0 0 24 24">
                                 <rect
                                     x="4"
                                     y="2"
@@ -65,7 +65,7 @@ function DashboardNavbar({ toggleSidebar, isOpen }) {
                                 <rect x="8" y="6" width="8" height="2" fill="white" />
                                 <rect x="8" y="10" width="8" height="2" fill="white" />
                                 <rect x="8" y="14" width="5" height="2" fill="white" />
-                            </svg>
+                            </svg> */}
                         </span>
                         <span className="font-bold text-blue-600 text-2xl md:text-3xl tracking-tight">
                             LeaveMS

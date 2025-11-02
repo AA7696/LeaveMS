@@ -12,12 +12,12 @@ function Footer() {
           <div className="flex items-center mb-4">
             <span className="bg-blue-600 p-2 rounded-lg mr-2">
               {/* Logo SVG */}
-              <svg width="28" height="28" fill="white" viewBox="0 0 24 24">
+              {/* <svg width="28" height="28" fill="white" viewBox="0 0 24 24">
                 <rect x="4" y="2" width="16" height="20" rx="4" stroke="white" strokeWidth="2" fill="none"/>
                 <rect x="8" y="6" width="8" height="2" fill="white"/>
                 <rect x="8" y="10" width="8" height="2" fill="white"/>
                 <rect x="8" y="14" width="5" height="2" fill="white"/>
-              </svg>
+              </svg> */}
             </span>
             <span className="font-semibold text-lg text-white">LeaveMS</span>
           </div>
