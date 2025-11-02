@@ -1,7 +1,7 @@
 // Api Instance creation
 import axios from 'axios';
 const api = axios.create({
-    baseURL:  'https://leave-ms-backend-8koh.vercel.app/api',
+    baseURL:  'https://leavems-7n10.onrender.com/api',
     withCredentials: true, // to send cookies with requests
     headers: {
         'Content-Type': 'application/json',
