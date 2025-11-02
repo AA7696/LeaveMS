@@ -1,7 +1,8 @@
 // Api Instance creation
 import axios from 'axios';
 const api = axios.create({
-    baseURL:  'https://leavems-7n10.onrender.com/api',
+    baseURL: 'https://leavems-7n10.onrender.com/api',
+    // baseURL:   'http://localhost:8000/api',
     withCredentials: true, // to send cookies with requests
     headers: {
         'Content-Type': 'application/json',

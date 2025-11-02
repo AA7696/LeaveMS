@@ -59,17 +59,6 @@ export const AuthProvider = ({ children }) => {
 
   // Login function
   const login = async (email, password) => {
-    // Best-effort clear any previous server session/cookie before logging in.
-    // Some backends use httpOnly cookies for sessions; clearing the previous
-    // session on the server helps avoid returning the previous user's profile
-    // when calling the refresh endpoint.
-    try {
-      await api.post("/auth/logout");
-    } catch (err) {
-      // ignore: logout is best-effort and may fail if there's no active session
-    }
-    // Ensure local token is cleared before login
-    sessionStorage.removeItem("accessToken");
 
     dispatch({ type: "LOADING" });
     try {
