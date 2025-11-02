@@ -73,16 +73,52 @@ export const AuthProvider = ({ children }) => {
 
     dispatch({ type: "LOADING" });
     try {
-      await api.post("/auth/login", { email, password });
+      // First attempt to login
+      const loginRes = await api.post("/auth/login", { email, password });
 
-      // Get new access token
-      const resRefresh = await api.post("/auth/refresh-token");
-      sessionStorage.setItem("accessToken", resRefresh.data.data.accessToken);
+      // Try to read profile immediately
+      let profileRes = await api.get("/auth/profile");
 
-      // Fetch user profile using /auth/profile
-      const profileRes = await api.get("/auth/profile");
-      dispatch({ type: "LOGIN_SUCCESS", payload: { user: profileRes.data.data } });
-      return true;
+      // If profile doesn't match the requested email, attempt one retry:
+      // Sometimes a stale server session/cookie can cause the profile to
+      // belong to the previous user. Retry by logging out on server and
+      // logging in again once.
+      const profileEmail = profileRes?.data?.data?.email;
+      if (profileEmail && profileEmail !== email) {
+        console.warn("AuthContext: profile email mismatch after login; retrying to clear stale server session");
+        try {
+          await api.post("/auth/logout");
+          await api.post("/auth/login", { email, password });
+          profileRes = await api.get("/auth/profile");
+        } catch (retryErr) {
+          // fall through to error handling below
+          console.warn("AuthContext: retry login failed", retryErr);
+        }
+      }
+
+      // Prefer accessToken returned by login response if available
+      const accessFromLogin = loginRes?.data?.data?.accessToken;
+      if (accessFromLogin) {
+        sessionStorage.setItem("accessToken", accessFromLogin);
+      } else {
+        // Otherwise attempt refresh-token to get an access token (legacy flow)
+        try {
+          const resRefresh = await api.post("/auth/refresh-token");
+          if (resRefresh?.data?.data?.accessToken) {
+            sessionStorage.setItem("accessToken", resRefresh.data.data.accessToken);
+          }
+        } catch (refreshErr) {
+          // ignore refresh failure for now; profile may still be available via cookie
+          console.warn("AuthContext: refresh-token failed after login", refreshErr);
+        }
+      }
+
+      if (profileRes?.data?.data) {
+        dispatch({ type: "LOGIN_SUCCESS", payload: { user: profileRes.data.data } });
+        return true;
+      }
+
+      throw new Error("Failed to retrieve profile after login");
     } catch (error) {
       dispatch({
         type: "AUTH_ERROR",
