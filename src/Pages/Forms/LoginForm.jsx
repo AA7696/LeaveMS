@@ -7,6 +7,7 @@ import { useContext } from "react";
 import { AuthContext } from "../../context/AuthContext.jsx";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
+import { GiLogging } from "react-icons/gi";
 
 
 function LoginForm() {
@@ -24,7 +25,6 @@ function LoginForm() {
             // Redirect or show success message
             navigate("/dashboard");
             toast.success('Login Successful!');
-            console.log("Login successful");
             setEmail("");
             setPassword("");
         } else {
@@ -37,13 +37,13 @@ function LoginForm() {
     }
 
     // Demo login for Employee
-    const demoEmployee = async () => {
+    const demoEmployee =  () => {
         setEmail("arti@gmail.com")
         setPassword("123")
     }
 
     // Demo login for Admin
-    const demoAdmin = async () => {
+    const demoAdmin =  () => {
         setEmail("admin@gmail.com")
         setPassword("admin")
     }
@@ -124,7 +124,7 @@ function LoginForm() {
                     onClick={handleSubmit}
                     className="w-full bg-blue-600 text-white font-semibold py-2 rounded-md hover:bg-blue-700 transition mb-4"
                 >
-                    Log In
+                    {loading? 'Loging...': 'Log In'}
                 </button>
 
                 <p className="text-xs text-gray-400 text-center mt-2">

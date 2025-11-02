@@ -59,6 +59,18 @@ export const AuthProvider = ({ children }) => {
 
   // Login function
   const login = async (email, password) => {
+    // Best-effort clear any previous server session/cookie before logging in.
+    // Some backends use httpOnly cookies for sessions; clearing the previous
+    // session on the server helps avoid returning the previous user's profile
+    // when calling the refresh endpoint.
+    try {
+      await api.post("/auth/logout");
+    } catch (err) {
+      // ignore: logout is best-effort and may fail if there's no active session
+    }
+    // Ensure local token is cleared before login
+    sessionStorage.removeItem("accessToken");
+
     dispatch({ type: "LOADING" });
     try {
       await api.post("/auth/login", { email, password });
@@ -87,7 +99,16 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       console.error("Logout failed:", error);
     }
+    // Remove local token and clear any axios default auth header to avoid
+    // sending stale Authorization values in subsequent requests.
     sessionStorage.removeItem("accessToken");
+    try {
+      // clear axios instance header (safe even if not previously set)
+      api.defaults.headers.common["Authorization"] = "";
+    } catch (err) {
+      // ignore
+    }
+
     dispatch({ type: "LOGOUT" });
   };
 
