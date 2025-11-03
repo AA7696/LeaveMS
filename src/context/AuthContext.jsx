@@ -58,51 +58,61 @@ export const AuthProvider = ({ children }) => {
 
 
   // Login function
-  const login = async (email, password) => {
+const login = async (email, password) => {
+  console.log("🔵 LOGIN START - Clearing storage");
+  sessionStorage.clear();
+  
+  dispatch({ type: "LOADING" });
+  try {
+    console.log("🔵 Logging in with:", email);
+    await api.post("/auth/login", { email, password });
 
-    dispatch({ type: "LOADING" });
-    try {
-      sessionStorage.clear();
-      await api.post("/auth/login", { email, password });
+    // Get new access token
+    const resRefresh = await api.post("/auth/refresh-token");
+    console.log("🔵 New access token received");
+    sessionStorage.setItem("accessToken", resRefresh.data.data.accessToken);
 
-      // Get new access token
-      const resRefresh = await api.post("/auth/refresh-token");
-      sessionStorage.setItem("accessToken", resRefresh.data.data.accessToken);
+    // Fetch user profile
+    const profileRes = await api.get("/auth/profile");
+    console.log("🔵 Profile fetched:", profileRes.data.data);
+    dispatch({ type: "LOGIN_SUCCESS", payload: { user: profileRes.data.data } });
+    return true;
+  } catch (error) {
+    console.error("🔴 Login error:", error);
+    dispatch({
+      type: "AUTH_ERROR",
+      payload: error.response?.data?.message || error.message,
+    });
+    return false;
+  }
+};
 
-      // Fetch user profile using /auth/profile
-      const profileRes = await api.get("/auth/profile");
-      dispatch({ type: "LOGIN_SUCCESS", payload: { user: profileRes.data.data } });
-      return true;
-    } catch (error) {
-      dispatch({
-        type: "AUTH_ERROR",
-        payload: error.response?.data?.message || error.message,
-      });
-      return false;
-    }
-  };
+
 
   // Logout function
-  const logout = async () => {
-    try {
-      await api.post("/auth/logout");
-    } catch (error) {
-      console.error("Logout failed:", error);
-    }
-    // Remove local token and clear any axios default auth header to avoid
-    // sending stale Authorization values in subsequent requests.
-    sessionStorage.clear()
-    try {
-      // clear axios instance header (safe even if not previously set)
-      delete api.defaults.headers.common["Authorization"];
-    } catch (err) {
-      // ignore
-    }
+const logout = async () => {
+  console.log("🟡 LOGOUT START");
+  console.log("🟡 Current token before logout:", sessionStorage.getItem("accessToken"));
+  
+  try {
+    await api.post("/auth/logout");
+  } catch (error) {
+    console.error("Logout API failed:", error);
+  }
+  
+  sessionStorage.clear();
+  localStorage.clear();
+  console.log("🟡 Storage cleared");
+  
+  delete api.defaults.headers.common["Authorization"];
+  console.log("🟡 Headers cleared");
+  
+  dispatch({ type: "LOGOUT" });
+  
+  console.log("🟡 Redirecting to login...");
+  window.location.href = "/login";
+};
 
-    dispatch({ type: "LOGOUT" });
-    window.location.href = "/login"
-
-  };
 
 // Register function
 const register = async ({ name, email, password }) => {
