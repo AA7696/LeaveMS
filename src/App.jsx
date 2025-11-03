@@ -15,6 +15,7 @@ import { Toaster } from 'react-hot-toast';
 import AllLeaves from './Pages/Admin Dashboard/AllLeaves.jsx';
 import UserHistory from './Pages/Admin Dashboard/UserHistory.jsx';
 import ProtectedRoute from './Component/ProtectedRoutes.jsx';
+import NotFound from './Component/NotFound.jsx';
 
 function App() {
 
@@ -45,6 +46,8 @@ function App() {
             <Route path='user-history/:id' element={<UserHistory />} />
           </Route>
         </Route>
+
+         <Route path="*" element={<NotFound />} />
 
       </Routes>
 
