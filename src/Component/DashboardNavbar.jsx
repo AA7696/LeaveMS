@@ -4,17 +4,14 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { IoClose } from 'react-icons/io5';
-import LeaveContext from "../context/LeaveContext";
 
 
 function DashboardNavbar({ toggleSidebar, isOpen }) {
     const { user, logout } = useContext(AuthContext);
-    const {resetLeaves} = useContext(LeaveContext)
     const navigate = useNavigate();
 
     const handleLogout = () => {
         logout();
-        resetLeaves()
         navigate("/login");
         toast.success("Logged Out Successfully!");
     };
