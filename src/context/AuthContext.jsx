@@ -62,6 +62,7 @@ export const AuthProvider = ({ children }) => {
 
     dispatch({ type: "LOADING" });
     try {
+      sessionStorage.clear();
       await api.post("/auth/login", { email, password });
 
       // Get new access token
@@ -90,15 +91,17 @@ export const AuthProvider = ({ children }) => {
     }
     // Remove local token and clear any axios default auth header to avoid
     // sending stale Authorization values in subsequent requests.
-    sessionStorage.removeItem("accessToken");
+    sessionStorage.clear()
     try {
       // clear axios instance header (safe even if not previously set)
-      api.defaults.headers.common["Authorization"] = "";
+      delete api.defaults.headers.common["Authorization"];
     } catch (err) {
       // ignore
     }
 
     dispatch({ type: "LOGOUT" });
+    window.location.href = "/login"
+
   };
 
 // Register function
