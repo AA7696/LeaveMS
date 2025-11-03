@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 
 
 function AdminDashboard() {
-    const { leaves, updateLeaveStatus, fetchLeaves } = useContext(LeaveContext)
+    const { leaves, updateLeaveStatus,  fetchAllLeaves } = useContext(LeaveContext)
     const navigate = useNavigate()
 
     // Pending Request
@@ -23,7 +23,7 @@ function AdminDashboard() {
         const success = await updateLeaveStatus(leaveId, 'approved');
         if (success) {
             toast.success('Leave Approved');
-            await fetchLeaves(); // refresh list after update
+            await fetchAllLeaves(); // refresh list after update
         } else {
             toast.error("Error")
 
@@ -35,7 +35,7 @@ function AdminDashboard() {
         if (success) {
             toast.success('Leave Rejected');
 
-            await fetchLeaves(); // refresh list after update
+            await fetchAllLeaves(); // refresh list after update
         } else {
             toast.error("Error")
         }
