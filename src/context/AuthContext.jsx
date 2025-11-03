@@ -59,31 +59,31 @@ export const AuthProvider = ({ children }) => {
 
   // Login function
 const login = async (email, password) => {
-  console.log("🔵 LOGIN START - Clearing storage");
+  console.log(" LOGIN START - Clearing storage");
   sessionStorage.clear();
   localStorage.clear();
   
   dispatch({ type: "LOADING" });
   try {
-    console.log("🔵 Logging in with:", email);
+    console.log(" Logging in with:", email);
     
     const loginRes = await api.post("/auth/login", { email, password });
     
-    // 🔥 ADD THESE DEBUG LOGS
-    console.log("🔵 FULL LOGIN RESPONSE:", loginRes);
-    console.log("🔵 Response data:", loginRes.data);
-    console.log("🔵 Response data.data:", loginRes.data.data);
-    console.log("🔵 Access token:", loginRes.data.data?.accessToken);
+    // ADD THESE DEBUG LOGS
+    console.log(" FULL LOGIN RESPONSE:", loginRes);
+    console.log(" Response data:", loginRes.data);
+    console.log(" Response data.data:", loginRes.data.data);
+    console.log(" Access token:", loginRes.data.data?.accessToken);
     
     const { accessToken } = loginRes.data.data;
     
     if (!accessToken) {
-      console.error("❌ NO ACCESS TOKEN IN RESPONSE!");
+      console.error(" NO ACCESS TOKEN IN RESPONSE!");
       throw new Error("Access token not received from backend");
     }
     
     sessionStorage.setItem("accessToken", accessToken);
-    console.log("🔵 Token saved:", sessionStorage.getItem("accessToken"));
+    console.log("Token saved:", sessionStorage.getItem("accessToken"));
 
     const profileRes = await api.get("/auth/profile");
     console.log("🔵 Profile fetched:", profileRes.data.data);
@@ -91,8 +91,8 @@ const login = async (email, password) => {
     dispatch({ type: "LOGIN_SUCCESS", payload: { user: profileRes.data.data } });
     return true;
   } catch (error) {
-    console.error("🔴 Login error:", error);
-    console.error("🔴 Error response:", error.response?.data);
+    console.error(" Login error:", error);
+    console.error(" Error response:", error.response?.data);
     dispatch({
       type: "AUTH_ERROR",
       payload: error.response?.data?.message || error.message,
@@ -102,8 +102,8 @@ const login = async (email, password) => {
 };
   // Logout function
 const logout = async () => {
-  console.log("🟡 LOGOUT START");
-  console.log("🟡 Current token before logout:", sessionStorage.getItem("accessToken"));
+  console.log(" LOGOUT START");
+  console.log(" Current token before logout:", sessionStorage.getItem("accessToken"));
   
   try {
     await api.post("/auth/logout");
@@ -113,14 +113,14 @@ const logout = async () => {
   
   sessionStorage.clear();
   localStorage.clear();
-  console.log("🟡 Storage cleared");
+  console.log(" Storage cleared");
   
   delete api.defaults.headers.common["Authorization"];
-  console.log("🟡 Headers cleared");
+  console.log(" Headers cleared");
   
   dispatch({ type: "LOGOUT" });
   
-  console.log("🟡 Redirecting to login...");
+  console.log(" Redirecting to login...");
   window.location.href = "/login";
 };
 

@@ -1,6 +1,8 @@
 import React from 'react';
 
+// Leave balave cards
 function LeaveBalanceCard({ type, available, used, total }) {
+  // calculate percent of leave used
   const percent = total > 0 ? (used / total) * 100 : 0;
   return (
     <div className="bg-white rounded-lg shadow border p-5 w-full min-w-[220px]">

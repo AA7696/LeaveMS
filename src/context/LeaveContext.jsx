@@ -172,7 +172,6 @@ export const LeaveContextProvider = ({ children }) => {
 
     // Update Leave Status
 
-
 const updateLeaveStatus = useCallback(async (leaveId, status) => {
   dispatch({ type: ACTIONS.START });
   try {

@@ -32,10 +32,17 @@ function ApplyLeave() {
             return;
         }
 
-
+   // calculating no of days
         const startDate = new Date(form.start);
         const endDate = new Date(form.end);
         const today = new Date();
+        
+    /* Makig sure that date has condtions so improper date can be addded
+    Start date cannot be in the past
+    End date cannot be before start date
+    Leave request submitted successfully!
+
+    */
 
         if (startDate < today.setHours(0, 0, 0, 0)) {
             toast.error("Start date cannot be in the past.");

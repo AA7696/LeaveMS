@@ -38,8 +38,8 @@ function LoginForm() {
 
     // Demo login for Employee
     const demoEmployee =  () => {
-        setEmail("arti@gmail.com")
-        setPassword("123")
+        setEmail("user@gmail.com")
+        setPassword("user")
     }
 
     // Demo login for Admin

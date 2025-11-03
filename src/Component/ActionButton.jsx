@@ -3,6 +3,7 @@ import { LuCheck } from 'react-icons/lu';
 import { AiOutlineClose } from 'react-icons/ai';
 import { FaRegUserCircle } from 'react-icons/fa';
 
+// Action Buttotn for accepting rejectin request
 function ActionButtons({ onApprove, onReject, onUserInfo }) {
   return (
     <div className="flex gap-2">

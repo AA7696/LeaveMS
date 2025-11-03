@@ -19,6 +19,8 @@ function AdminDashboard() {
         return Math.ceil(diff / (1000 * 3600 * 24)) + 1;
     };
 
+
+    // This function handle Accept leave 
     const handleApprove = async (leaveId) => {
         const success = await updateLeaveStatus(leaveId, 'approved');
         if (success) {
@@ -30,6 +32,7 @@ function AdminDashboard() {
         }
     };
 
+    // This function handle Accept leave 
     const handleReject = async (leaveId) => {
         const success = await updateLeaveStatus(leaveId, 'rejected');
         if (success) {
