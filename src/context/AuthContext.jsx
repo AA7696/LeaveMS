@@ -61,20 +61,25 @@ export const AuthProvider = ({ children }) => {
 const login = async (email, password) => {
   console.log("🔵 LOGIN START - Clearing storage");
   sessionStorage.clear();
+  localStorage.clear(); // Clear this too
   
   dispatch({ type: "LOADING" });
   try {
     console.log("🔵 Logging in with:", email);
-    await api.post("/auth/login", { email, password });
-
-    // Get new access token
-    const resRefresh = await api.post("/auth/refresh-token");
-    console.log("🔵 New access token received");
-    sessionStorage.setItem("accessToken", resRefresh.data.data.accessToken);
+    
+    // Login now returns accessToken directly
+    const loginRes = await api.post("/auth/login", { email, password });
+    console.log("🔵 Login response received:", loginRes.data);
+    
+    // Get access token from login response (not from refresh endpoint)
+    const { accessToken } = loginRes.data.data;
+    sessionStorage.setItem("accessToken", accessToken);
+    console.log("🔵 Access token saved");
 
     // Fetch user profile
     const profileRes = await api.get("/auth/profile");
     console.log("🔵 Profile fetched:", profileRes.data.data);
+    
     dispatch({ type: "LOGIN_SUCCESS", payload: { user: profileRes.data.data } });
     return true;
   } catch (error) {
@@ -86,8 +91,6 @@ const login = async (email, password) => {
     return false;
   }
 };
-
-
 
   // Logout function
 const logout = async () => {
